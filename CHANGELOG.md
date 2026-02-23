@@ -1,5 +1,14 @@
 # Changelog
 
+### [1.0.1](https://github.com/Papagemabodi/Papiroska/compare/v1.0.0...v1.0.1) (2026-02-23)
+
+
+### Bug Fixes
+
+* vendor mibu as regular files ([b501763](https://github.com/Papagemabodi/Papiroska/commit/b50176360dfb083d17d57aa1f30d82187ac46cae))
+* vendor mibu as regular files ([b501763](https://github.com/Papagemabodi/Papiroska/commit/b50176360dfb083d17d57aa1f30d82187ac46cae))
+* vendor mibu as regular files ([9f343a6](https://github.com/Papagemabodi/Papiroska/commit/9f343a6597e0c7254b922c855ba7572d6e96a199))
+
 ## 1.0.0 (2026-02-23)
 
 
