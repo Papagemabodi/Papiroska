@@ -45,12 +45,6 @@ pub fn getwh(alloc: std.mem.Allocator, path: []const u8) ![]i32 {
     return &wh;
 }
 
-pub fn redraw() !void {
-    try mibu.cursor.goTo(stdout.writer(), xcoord, ycoord);
-    try stdout.writer().print("\x1b_Ga=d,d=i,i=17;\x1b\\", .{});
-    try stdout.writer().print("\x1b_Ga=p,i=17,r={d},c={d},w={d},h={d},x={d},y={d}\x1b\\", .{ scaledh, scaledw, zoomw, zoomh, xdrag, ydrag });
-}
-
 pub fn main() !void {
     var gp = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gp.deinit();
@@ -95,9 +89,9 @@ pub fn main() !void {
     ycoord = @divTrunc(termh - scaledh, 2);
 
     //debug printing
-    debug.print("imgw: {}\nimgh: {}\n", .{ imgw, imgh });
-    debug.print("scalew: {}\nscaleh: {}\n", .{ scalew, scaleh });
-    debug.print("scale: {}\nscaledw: {}\nscaledh: {}\nxcoord: {}\nycoord: {}\n", .{ scale, scaledw, scaledh, xcoord, ycoord });
+    // debug.print("imgw: {}\nimgh: {}\n", .{ imgw, imgh });
+    // debug.print("scalew: {}\nscaleh: {}\n", .{ scalew, scaleh });
+    // debug.print("scale: {}\nscaledw: {}\nscaledh: {}\nxcoord: {}\nycoord: {}\n", .{ scale, scaledw, scaledh, xcoord, ycoord });
 
     //init rawmode , mouse tracking and altterm
     try stdout.writer().print("{s}", .{mibu.utils.enable_mouse_tracking});
@@ -120,74 +114,17 @@ pub fn main() !void {
     //input handling
     zoomw = @floatFromInt(imgdim[0]);
     zoomh = @floatFromInt(imgdim[1]);
-    const staticw: f32 = @floatFromInt(imgdim[0]);
-    const statich: f32 = @floatFromInt(imgdim[1]);
-    const aspect_ratio = statich / staticw;
-    const ten: f32 = 10;
 
     while (true) {
         const next = try mibu.events.nextWithTimeout(stdin, 1000);
         switch (next) {
-            .mouse => |m| {
-                switch (m.button) {
-                    .scroll_up => {
-                        zoomw -= staticw / ten;
-                        zoomh -= (staticw / ten) * aspect_ratio;
-                        if (zoomw < 0) zoomw = 0;
-                        if (zoomh < 0) zoomh = 0;
-                        try redraw();
-                    },
-                    .scroll_down => {
-                        zoomw += staticw / ten;
-                        zoomh += (staticw / ten) * aspect_ratio;
-
-                        if (zoomw >= staticw) {
-                            xdrag = 0;
-                            ydrag = 0;
-                        }
-
-                        try redraw();
-                    },
-                    else => {},
-                }
-            },
             .key => |k| {
                 switch (k) {
                     .char => |c| {
                         if (c == 'q') break;
-                        if (c == 'w') {
-                            ydrag -= 4 * amplify;
-                            if (ydrag < 0) ydrag = 0;
-                            try redraw();
-                        }
-                        if (c == 's') {
-                            ydrag += 4 * amplify;
-                            const max_ydrag = @max(0, @as(i32, @intFromFloat(zoomh)) - (scaledh * cellh));
-                            if (ydrag > max_ydrag) ydrag = max_ydrag;
-                            try redraw();
-                        }
-                        if (c == 'a') {
-                            xdrag -= 4 * amplify;
-                            if (xdrag < 0) xdrag = 0;
-                            try redraw();
-                        }
-                        if (c == 'd') {
-                            xdrag += 4 * amplify;
-                            const max_xdrag = @max(0, @as(i32, @intFromFloat(zoomw)) - (scaledw * cellw));
-                            if (xdrag > max_xdrag) xdrag = max_xdrag;
-                            try redraw();
-                        }
                     },
                     .ctrl => |c| {
                         if (c == 'c') break;
-                    },
-                    .shift_down => |c| {
-                        c;
-                        amplify = 10;
-                    },
-                    .shift_up => |c| {
-                        c;
-                        amplify = 1;
                     },
 
                     else => {},
