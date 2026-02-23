@@ -56,11 +56,11 @@ pub fn getOrConvertImage(alloc: std.mem.Allocator, picpth: []const u8) ![]u8 {
     };
 
     if (!cache_exists) {
-        std.debug.print("Converting {s} to PNG...\n", .{picpth});
+        //std.debug.print("Converting {s} to PNG...\n", .{picpth});
         try runit.runAndWait(alloc, &[_][]const u8{ "vips", "copy", picpth, dest_path });
-        std.debug.print("Cached at: {s}\n", .{dest_path});
+        //std.debug.print("Cached at: {s}\n", .{dest_path});
     } else {
-        std.debug.print("Using cached PNG: {s}\n", .{dest_path});
+        //std.debug.print("Using cached PNG: {s}\n", .{dest_path});
     }
 
     return dest_path;
